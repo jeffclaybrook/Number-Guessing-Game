@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>JavaScript Number Guessing Game</title>
+   <style>
+      * {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+      }
+
+      *,
+      *::before,
+      *::after {
+         box-sizing: inherit;
+      }
+
+      html {
+         height: 100%;
+      }
+
+      body {
+         font-family: sans-serif;
+      }
+
+      .container {
+         width: 90%;
+         margin: 0 auto;
+      }
+
+      h1 {
+         margin-bottom: 1rem;
+         padding-top: 1rem;
+         font-size: 1.25rem;
+      }
+
+      p {
+         margin-bottom: 1rem;
+         font-size: .875rem;
+      }
+
+      label {
+         display: block;
+         font-size: .875rem;
+         margin-bottom: 1rem;
+      }
+
+      input {
+         margin-bottom: 1rem;
+         padding: 12px 10px;
+         outline: none;
+         border: none;
+         background: #f4f4f4;
+         color: #000;
+         border-radius: 4px;
+      }
+   </style>
+</head>
+<body>
+   <div class="container">
+      <h1>Number guessing game</h1>
+      <p>See if you can guess the correct number between 1 and 100 in ten attempts or less.</p>
+      <label for="guessField">Enter a guess:</label>
+      <input type="text" id="guessField" class="guessField">
+      <input type="submit" value="Submit guess" class="guessSubmit">
+      <div class="resultParas">
+         <p class="guesses"></p>
+         <p class="lastResult"></p>
+         <p class="lowOrHi"></p>
+      </div>
+   </div>
+
+   <script>
+
+      let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+      const guesses = document.querySelector('.guesses');
+      const lastResult = document.querySelector('.lastResult');
+      const lowOrHi = document.querySelector('.lowOrHi');
+
+      const guessSubmit = document.querySelector('.guessSubmit');
+      const guessField = document.querySelector('.guessField');
+
+      let guessCount = 1;
+      let resetButton;
+
+      function checkGuess() {
+         let userGuess = Number(guessField.value);
+         if (guessCount === 1) {
+            guesses.textContent = 'Previous guesses: ';
+         }
+         guesses.textContent += userGuess + ' ';
+
+         if (userGuess === randomNumber) {
+            lastResult.textContent = 'Congratulations! You got it right!';
+            lastResult.style.backgroundColor = 'green';
+            lowOrHi.textContent = '';
+            setGameOver();
+         } else if (guessCount === 10) {
+            lastResult.textContent = '!!!GAME OVER!!!';
+            setGameOver();
+         } else {
+            lastResult.textContent = 'Wrong!';
+            lastResult.style.backgroundColor = 'red';
+            if(userGuess < randomNumber) {
+               lowOrHi.textContent = 'Last guess was too low!';
+            } else if(userGuess > randomNumber) {
+               lowOrHi.textContent = 'Last guess was too high!';
+            }
+         }
+
+         guessCount++;
+         guessField.value = '';
+         guessField.focus();
+      }
+
+      guessSubmit.addEventListener('click', checkGuess);
+
+      function setGameOver() {
+         guessField.disabled = true;
+         guessSubmit.disabled = true;
+         resetButton = document.createElement('button');
+         resetButton.textContent = 'Start new game';
+         document.body.append(resetButton);
+         resetButton.addEventListener('click', resetGame);
+      }
+
+      function resetGame() {
+         guessCount = 1;
+
+         const resetParas = document.querySelectorAll('.resultParas p');
+         for (let i = 0 ; i < resetParas.length ; i++) {
+            resetParas[i].textContent = '';
+         }
+
+         resetButton.parentNode.removeChild(resestButton);
+
+         guessField.disabled = false;
+         guessSubmit.disabled = false;
+         guessField.value = '';
+         guessField.focus();
+
+         lastResult.style.backgroundColor = 'white';
+
+         randomNumber = Math.floor(Math.random() * 100) + 1;
+      }
+   
+   </script>
+
+</body>
+</html>
